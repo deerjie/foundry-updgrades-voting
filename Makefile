@@ -1,0 +1,1 @@
+forge install Cyfrin/foundry-devops
