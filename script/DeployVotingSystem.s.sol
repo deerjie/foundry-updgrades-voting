@@ -27,9 +27,20 @@ contract DeployVotingSystem is Script {
         implementation = address(votingSystemImplementation);
         
         // 2. 生成初始化数据
+        address owner;
+        if (block.chainid == 11155111) { // Sepolia测试网
+            // 使用环境变量中的OWNER_ADDRESS
+            owner = vm.envAddress("OWNER_ADDRESS");
+            console.log("Sepolia network detected. Using OWNER_ADDRESS from .env:", owner);
+        } else {
+            // 使用部署者地址
+            owner = msg.sender;
+            console.log("Using deployer as owner:", owner);
+        }
+
         bytes memory initializeData = abi.encodeWithSelector(
             VotingSystem.initialize.selector,
-            msg.sender // 初始化合约拥有者为部署者
+            owner // 使用确定的所有者地址
         );
         
         // 3. 部署代理并指向实现合约
